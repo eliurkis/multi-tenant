@@ -329,6 +329,12 @@ class Connection
             default:
                 throw new ConnectionException("Division mode '$mode' unknown.");
         }
+        
+        if (!config('tenancy.db.auto-create-tenant-database-user')) {
+            $defaultConnection = config('database.default');
+            $clone['username'] = config('database.connections.'.$defaultConnection.'.username');
+            $clone['password'] = config('database.connections.'.$defaultConnection.'.password');
+        }
 
         $this->emitEvent(new Events\Database\ConfigurationLoaded($clone, $this, $website));
 
